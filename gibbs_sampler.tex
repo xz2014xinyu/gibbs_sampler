@@ -1,0 +1,99 @@
+\documentclass[11pt]{article}
+\usepackage[parfill]{parskip}
+\usepackage[top=1in, bottom=1in, left=1 in, right=1in]{geometry}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{amssymb}
+\usepackage{caption}
+\usepackage{bm}
+\usepackage{mathbbol}
+\usepackage{subcaption}
+\usepackage[fleqn]{amsmath}
+\graphicspath{ {images/} }
+\DeclareMathSizes{15}{15}{15}{15}
+\usepackage{setspace} 
+\usepackage{tikz,pgfplots,pgfplotstable,filecontents}
+\usetikzlibrary{arrows,decorations.pathmorphing,fit,positioning}
+\setlength{\parindent}{0.6em}
+\setlength{\parskip}{0.6em}
+\date{\vspace{-5ex}}
+\begin{document}
+\newcommand\ddfrac[2]{\frac{\displaystyle #1}{\displaystyle #2}}
+\begin{spacing}{1.6}
+\title{Gibbs sampling for LDA}
+\maketitle
+
+\section{Derivation of The Full Conditional Posterior Distribution}
+We will use collapsed Gibbs sampling to estimate unknown parameters. The full conditional posterior distribution is $P({z^d_i}| {\bf{z}_{-i}},\mathcal{C},\alpha,\eta)$ where ${z^d_i}$ is the $i$-th word in document $d$. ${\bf{z}_{-z^d_i}}$ is the assignment of all topics except ${z^d_i}$, $\mathcal{C}$ is a list of observed words.\\
+
+\noindent 
+According to Bayes' rule, $P({z^d_i}| {\bf{z}_{-i}},\mathcal{C},\alpha,\eta)=\ddfrac{P(\bf{z},\mathcal{C}|\alpha,\eta)}{P(\bf{z}_{-i},\mathcal{C}|\alpha,\eta)}$, when sampling $z^d_i$, all other topics are considered to be known, so the denominator can be ignored. Let $(\theta^0,\ldots,\theta^D)$ be topic proportions for D documents and $\theta^d_k$ is the weight of k-th topic in document $d$ There are K topics in total. Topics are independent given $\theta$ and $(\theta^0,\ldots,\theta^D)$ are independent given $\alpha$. Similarly let $(\psi^0,\ldots,\psi^K)$ be word probabilities for K topics and $\psi^k_v$ is the weight of v-th word in topic $k$. There are V unique words in total. Words are independent given $\psi$ and $\bf{z}$, and $(\psi^0,\ldots,\psi^K)$ are independent given $\eta$.\\
+\begin{equation} \label{eq1}
+\begin{split}
+P({z^d_i}| {\bf{z}_{-i}},\mathcal{C},\alpha,\eta) \propto {P(\bf{z},\mathcal{C}|\alpha,\eta)}
+& = \iint  P({\bf{z}},\mathcal{C},\theta,\psi|\alpha,\eta) \, d\theta,d\psi\\
+ & = \iint  P(\mathcal{C}|\psi,{\bf{z}}) P({\psi}|\eta) P({\bf{z}}|\theta) P(\theta|\alpha) \, d\theta,d\psi\\
+ & = \int P(\mathcal{C}|\psi,{\bf{z}}) P({\psi}|\eta) \, d\psi \int P({\bf{z}}|\theta) P(\theta|\alpha) \, d\theta\\
+\                
+\end{split}
+\end{equation}\\
+\noindent Then we derive the formula for two integrals. Let $m^k=(m^k_0,\ldots,m^k_V)$ be the number of times a word v assigned to topic $k$ in all documents. Let $n^d=(n^d_0,\ldots,n^d_K)$ be the number of words assigned to each topic in document $d$. \\
+\begin{equation} \label{eq1}
+\begin{split}
+\int P({\bf{z}}|\theta) P(\theta|\alpha) \, d\theta 
+                 & = \idotsint P({\bf{z}}|\theta^0,\ldots,\theta^D) \cdot P(\theta^0,\ldots,\theta^D | \alpha) \,d\theta^0 \ldots d\theta^D\\
+                 & = \idotsint \prod_{d=1}^{D}\prod_{k=0}^{K} ({\theta^d_k})^{n^d_k} \cdot \prod_{d=0}^{D}\frac{\prod_{k=0}^{K} ({\theta^d_k})^{\alpha_k-1}}{B(\alpha)} \,d\theta^0 \ldots d\theta^D\\
+                 & = \prod_{d=0}^{D} \int \frac{\prod_{k=0}^{K} ({\theta^d_k})^{{n^d_k}+\alpha_k-1}}{B(\alpha)} \,d\theta^d \\
+                 & = \prod_{d=0}^{D} \frac{B(\alpha+n^d)}{B(\alpha)}\\
+\                
+\end{split}
+\end{equation}
+\begin{equation} \label{eq2}
+\begin{split}
+\int P(\mathcal{C}|\psi,{\bf{z}}) P({\psi}|\eta)\, d\psi 
+                             & = \idotsint P(\mathcal{C}|\psi^0,\ldots,\psi^K,{\bf{z}}) \cdot P(\psi^0,\ldots,\psi^K | \eta) \,d\psi^0 \ldots d\psi^K\\
+                             & = \idotsint \prod_{k=0}^{K}\prod_{v=0}^{V} ({\psi^k_v})^{m^k_v} \cdot \prod_{k=0}^{K}\frac{\prod_{v=0}^{V} ({\psi^k_v})^{\eta_v-1}}{B(\eta)} \,d\psi^0 \ldots d\psi^K\\
+                             & =  \prod_{k=0}^{K} \int \frac{\prod_{v=0}^{V} ({\psi^k_v})^{{m^k_v}+\eta_v-1}}{B(\eta)} \,d\psi^k \\
+                             & = \prod_{k=0}^{K} \frac{B(m^k+\eta)}{B(\eta)}\\
+\                
+\end{split}
+\end{equation}\\
+\noindent Let $M^k$ be number of words with topic $k$ in all documents. To sample a topic $z^q_p$ for $w^q_p$ (p-th word in document q), full conditional posterior distribution (1) is reduced to:
+\begin{equation} \label{eq2}
+\begin{split}
+P({z^q_p}| {\bf{z}_{-i}},\mathcal{C},\alpha,\eta) & \propto\prod_{d=0}^{D} \frac{B(\alpha+n^d)}{B(\alpha)} \cdot \prod_{k=0}^{K} \frac{B(m^k+\eta)}{B(\eta)}\\
+& \propto \prod_{d=0}^{D} B(\alpha+n^d) \cdot \prod_{k=0}^{K} B(m^k+\eta)\\
+& = \prod_{d=0}^{D} \frac{\prod_{k=0}^{K} \Gamma (\alpha_k+n^d_k) }{\Gamma \sum_{k=0}^{K} (\alpha_k + n^d_k)} \cdot \prod_{k=0}^{K} \frac{\prod_{v=0}^{V} \Gamma (\eta^k_v+m^k_v) }{\Gamma \sum_{v=0}^{V} (\eta^k_v + m^k_v)}\\[10pt]
+& \propto \frac{\prod_{k=0}^{K} \Gamma (\alpha_k+n^q_k) }{\Gamma \sum_{k=0}^{K} (\alpha_k + n^q_k)} \cdot \prod_{k=0}^{K}\frac{ \Gamma (\eta^k_v+m^k_{w^q_p}) }{\Gamma \sum_{v=0}^{V} (\eta^k_v + m^k_v)}\\[15pt]
+\   
+\end{split}
+\end{equation}
+\begin{equation} \label{eq2}
+\begin{split}
+[Continue] \quad & \propto \prod_{k=0}^{K} \Gamma (\alpha_k+n^q_k) \cdot \prod_{k=0}^{K}\frac{ \Gamma (\eta^k_v+m^k_{w^q_p}) }{\Gamma ({\sum_{v}\eta^k_v}+M^k)}\\[15pt]
+& = \bigg( \prod_{k \neq {z^q_p}} \Gamma (\alpha_k+n^q_k) \frac{ \Gamma (\eta^k_v+m^k_{w^q_p}) }{\Gamma ({\sum_{v}\eta_v}+M^k)} \bigg) \cdot \Gamma (\alpha_{z^q_p}+n^q_{z^q_p}) \frac{ \Gamma (\eta^{z^q_p}+m^{z^q_p}_{w^q_p}) }{\Gamma ({\sum_{v}\eta_v}+M^{z^q_p})}\\[15pt]
+\
+\end{split}
+\end{equation}
+
+\noindent Let $(n^d_k)^-$ be defined same way as $n^d_k$, only without the count for $(z^q_p, w^q_p)$. Let $(m^k_v)^-$ be defined same way as $m^k_v$ without the count for $(z^q_p, w^q_p)$. \\
+\begin{equation} \label{eq2}
+\begin{split}
+[Continue] \quad & =\bigg( \prod_{k \neq {z^q_p}} \Gamma (\alpha_k+{n^q_k}^{-}) \frac{ \Gamma (\eta^k_v+{m^k_{w^q_p}}^{-}) }{\Gamma ({\sum_{v}\eta_v}+M^k)} \bigg) \cdot \Gamma (\alpha_{z^q_p}+{({n^q_{z^q_p}})^-}+1) \frac{ \Gamma (\eta^{z^q_p}+{(m^{z^q_p}_{w^q_p}})^{-}+1) }{\Gamma ({\sum_{v}\eta_v}+M^{z^q_p}+1)}\\[15pt]
+& = \bigg( \prod_{k \neq {z^q_p}} \Gamma (\alpha_k+{n^q_k}^{-}) \frac{ \Gamma (\eta^k_v+{m^k_{w^q_p}}^{-}) }{\Gamma ({\sum_{v}\eta_v}+M^k)} \bigg)\\
+& \times \Big( \alpha_{z^q_p}+{({n^q_{z^q_p}})^-}\Big) \Gamma \Big( \alpha_{z^q_p}+{({n^q_{z^q_p}})^-}\Big) \frac{  \Big( \eta^{z^q_p}+{(m^{z^q_p}_{w^q_p}})^{-} \Big)  \Gamma \Big( \eta^{z^q_p}+{(m^{z^q_p}_{w^q_p}})^{-}\Big) }{ ({\sum_{v}\eta_v}+M^{z^q_p}) \Gamma ({\sum_{v}\eta_v}+M^{z^q_p}) }\\[15pt]
+& =  \bigg( \prod_{k=0}^{K} \Gamma (\alpha_k+{n^q_k}^{-}) \frac{ \Gamma (\eta^k_v+{m^k_{w^q_p}}^{-}) }{\Gamma ({\sum_{v}\eta_v}+M^k)} \bigg) \times \frac{\Big( \alpha_{z^q_p}+{({n^q_{z^q_p}})^-}\Big) \Big( \eta^{z^q_p}+{(m^{z^q_p}_{w^q_p}})^{-} \Big) }{({\sum_{v}\eta_v}+{M^{z^q_p}}^{-})}\\[15pt]
+& \propto \frac{\Big( \alpha_{z^q_p}+{({n^q_{z^q_p}})^-}\Big) \Big( \eta^{z^q_p}+{(m^{z^q_p}_{w^q_p}})^{-} \Big) }{{\sum_{v}\eta_v}+{M^{z^q_p}}^{-}}\\
+\
+\end{split}
+\end{equation}
+\noindent In conclusion, if we want to sample a topic for $i$-th word in $d$-th document, the probability distribution is\\
+\begin{equation} \label{eq2}
+\begin{split}
+P({z^d_i}=j | {w^d_i}=v, {\bf{z}_{-i}},\mathcal{C},\alpha,\eta) & = \frac{\Big( \alpha_{j}+{({n^d_{j}})^-}\Big) \Big( \eta^{j}_v+{(m^{j}_{v}})^{-} \Big) }{{\sum_{v}\eta^{j}_v}+{M^{j}}^{-}}
+\
+\end{split}
+\end{equation}
+
+\end{spacing}
+\end{document}
