@@ -20,7 +20,7 @@ import random
 
 #### #######################################  Gibbs sampler
 
-np.random.seed()
+np.random.seed(1)
 
 
 def lda_sampling(num_topics,alpha,eta,num_iterations,doc_term):
