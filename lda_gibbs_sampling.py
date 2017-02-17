@@ -81,10 +81,15 @@ np.random.seed()
 
 def lda_sampling(num_topics,alpha,eta,num_iterations,doc_term):
 
+	model={}
+
 	D=doc_term.shape[0] #number of documents
 	V=doc_term.shape[1] #vocabulary size
 	Nd=np.sum(doc_term,axis=1) # number of words in each document d
 	N=doc_term.sum() # total number of words
+
+	if alpha <= 0 or eta <= 0:
+		raise ValueError("alpha and eta must be greater than zero")
 
 
 #convert sparse matrix to arrays of words 	
@@ -133,6 +138,7 @@ def lda_sampling(num_topics,alpha,eta,num_iterations,doc_term):
 
 ## Sampling from full conditional posterior P(z| Z\z, w)
 	for n in range(1,num_iterations+1):
+		sampled_topics1={}
 		sampled_topics=[]
 		for d in range(D):
 
@@ -140,7 +146,7 @@ def lda_sampling(num_topics,alpha,eta,num_iterations,doc_term):
 
 			for i in range(Nd[d]):
 
-				# discount for the topic we will sample
+				# discount for the topic z^d_i  we will sample
 				n_zw[z_update[n-1][d][i],corpus[d][i]] -= 1
 				n_dz[d,z_update[n-1][d][i]] -= 1
 				n_z[z_update[n-1][d][i]] -=1
@@ -148,14 +154,7 @@ def lda_sampling(num_topics,alpha,eta,num_iterations,doc_term):
 				# sample a new topic from multinomial and store it as 'newtopic'
 				probz=np.zeros(num_topics)
 				for j in range(num_topics):
-					if n_zw[j,corpus[d][i]]==0 and n_dz[d,j]==0:
-						probz[j]=1
-					elif n_zw[j,corpus[d][i]]==0 and n_dz[d,j]>0:
-						probz[j]=1*(n_dz[d,j]+alpha[j]-1)
-					elif n_zw[j,corpus[d][i]]>0 and n_dz[d,j]==0:
-						probz[j]=(n_zw[j,corpus[d][i]]+eta[corpus[d][i]]-1)/(n_z[j])
-					else:
-						probz[j]=(n_zw[j,corpus[d][i]]+eta[corpus[d][i]]-1)*(n_dz[d,j]+alpha[j]-1)/n_z[j]
+						probz[j]=(n_zw[j,corpus[d][i]]+eta[corpus[d][i]])*(n_dz[d,j]+alpha[j])/(n_z[j]+sum(eta))
 				probz=probz/sum(probz)
 				newtopic=np.random.choice(np.arange(0,num_topics),p=probz)
 				newz[i]=newtopic
@@ -166,36 +165,40 @@ def lda_sampling(num_topics,alpha,eta,num_iterations,doc_term):
 				n_z[newtopic] += 1
 
 			sampled_topics.append(newz)
-
 		z_update.append(sampled_topics)
+		log_likelihhood=
 
-		print('Topic assignments at iteration {}:{}'.format(n,sampled_topics))
+## estimate topic proportions theta and word distributions psi
+	theta_hat=np.zeros((D,num_topics))
+	psi_hat=np.zeros((num_topics,V))
+
+	for i in range(D):
+		for j in range(num_topics):
+			theta_hat[i,j]=(n_dz[i,j]+alpha[j])/(Nd[i]-1+sum(alpha))
+	for i in range(num_topics):
+		for j in range(V):
+			psi_hat[i,j]=(n_zw[i,j]+eta[j])/(n_z[i]+sum(eta))
+
+
+############## results
+	lda_sampling.alpha=alpha
+	lda_sampling.eta=eta
+	lda_sampling.topics=z_update
+	lda_sampling.theta_hat=theta_hat
+	lda_sampling.psi_hat=psi_hat
 
 
 
 
 
-
+#return('Topic assignments at iteration {}:{}'.format(n,sampled_topics))
 
 
 
 
 ### test :
 
-lda_sampling(k,alpha,eta,5,doc_term)
-
-
-
-
-
-
-
-
-
-
-
-
-
+lda_sampling(k,alpha,eta,n,doc_term)
 
 
 
