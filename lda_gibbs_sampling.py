@@ -14,65 +14,9 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 import gensim
 import pandas as pd
+import scipy.special as sp
 import math
 import random
-
-#########################################################  Simulate a corpus
-k = 3  # number of topics
-V = 5 # Vocabulary size V
-D = 2  # Document size D
-alpha = [0.01]*k # Dirichlet prior for topic proportions
-xi = 10 # Poisson prior for 'number of words per document'
-eta = [0.01]*V # Dirichlet prior for topic-word distribution
-n = 50
-
-
-psi = []    # topic-word probability
-theta = []  # document-topic probability
-Nd = []  # number of words in each document
-Z = []  # pairs of (topic,word) Generated in D documents
-
-
-doc_term = sparse.lil_matrix((D,V))
-
-
-def G_P(k,D,alpha,xi,eta):
-
-    for i in range(k):
-        rows = np.random.dirichlet(eta,size = 1)
-        psi.append(rows)
-
-    for d in range(D):
-        # topic proportions
-        s=[1.0*random.gammavariate(a,1) for a in alpha]
-        if max(s)==0:
-            sample_theta=alpha
-        else:
-            sample_theta=[1.0*v/sum(s) for v in s]
-        # number of words in a document
-        sample_N = np.random.poisson(xi,size = 1)[0]
-
-        t=[]
-        W=[]
-        for n in range(sample_N):
-            
-            # sample a topic z
-            z = np.random.multinomial(1, pvals = sample_theta,size=1)
-            # sample a word given topic z
-            topic_index = np.nonzero(z)[1][0]
-            word = np.random.multinomial(1,pvals = psi[topic_index][0],size=1)
-            word_index = np.nonzero(word)[1][0]
-
-            W.append(word)
-            t.append((topic_index,word_index))
-
-        Z.append(t)
-        doc_term[d,:] = sum(W)[0]
-        theta.append(sample_theta)
-        Nd.append(sample_N)
-
-G_P(k,D,alpha,xi,eta)
-doc_term=doc_term.astype(np.int32)
 
 #### #######################################  Gibbs sampler
 
@@ -81,15 +25,11 @@ np.random.seed()
 
 def lda_sampling(num_topics,alpha,eta,num_iterations,doc_term):
 
-	model={}
 
 	D=doc_term.shape[0] #number of documents
 	V=doc_term.shape[1] #vocabulary size
 	Nd=np.sum(doc_term,axis=1) # number of words in each document d
 	N=doc_term.sum() # total number of words
-
-	if alpha <= 0 or eta <= 0:
-		raise ValueError("alpha and eta must be greater than zero")
 
 
 #convert sparse matrix to arrays of words 	
@@ -135,8 +75,8 @@ def lda_sampling(num_topics,alpha,eta,num_iterations,doc_term):
 				cc.append(c)
 			n_z[j]=sum(cc)
 
-
 ## Sampling from full conditional posterior P(z| Z\z, w)
+	log_likelihood=[]
 	for n in range(1,num_iterations+1):
 		sampled_topics1={}
 		sampled_topics=[]
@@ -166,7 +106,19 @@ def lda_sampling(num_topics,alpha,eta,num_iterations,doc_term):
 
 			sampled_topics.append(newz)
 		z_update.append(sampled_topics)
-		log_likelihhood=
+
+## calculate loglikelihood log p(w|z)
+		L=[]
+		for i in range(num_topics):
+			ll=[]
+			for j in range(V):
+				l=sp.gammaln(n_zw[i,j]+eta[j])-sp.gammaln(eta[j])
+				ll.append(l)
+			lll=sum(ll)-sp.gammaln(sum(n_zw[i,:])+sum(eta))+sp.gammaln(sum(eta))
+			L.append(lll)
+		L=sum(L)
+		log_likelihood.append(L)
+
 
 ## estimate topic proportions theta and word distributions psi
 	theta_hat=np.zeros((D,num_topics))
@@ -186,20 +138,13 @@ def lda_sampling(num_topics,alpha,eta,num_iterations,doc_term):
 	lda_sampling.topics=z_update
 	lda_sampling.theta_hat=theta_hat
 	lda_sampling.psi_hat=psi_hat
+	lda_sampling.log_likelihood=log_likelihood
 
 
 
 
 
 #return('Topic assignments at iteration {}:{}'.format(n,sampled_topics))
-
-
-
-
-### test :
-
-lda_sampling(k,alpha,eta,n,doc_term)
-
 
 
 
