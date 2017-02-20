@@ -20,12 +20,12 @@ import random
 
 #########################################################  Simulate a corpus
 k = 3  # number of topics
-V = 30 # Vocabulary size V
+V = 10 # Vocabulary size V
 D = 5  # Document size D
-alpha = [0.01]*k # Dirichlet prior for topic proportions
+alpha = [0.001]*k # Dirichlet prior for topic proportions
 xi = 10 # Poisson prior for 'number of words per document'
 eta = [0.01]*V # Dirichlet prior for topic-word distribution
-n = 50
+n = 500
 
 
 psi = []    # topic-word probability
@@ -74,3 +74,10 @@ def G_P(k,D,alpha,xi,eta):
 
 G_P(k,D,alpha,xi,eta)
 doc_term=doc_term.astype(np.int32)
+
+
+
+
+
+
+

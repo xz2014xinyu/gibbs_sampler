@@ -1,0 +1,42 @@
+\documentclass[11pt]{article}
+\usepackage[parfill]{parskip}
+\usepackage[top=1in, bottom=1in, left=1 in, right=1in]{geometry}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{amssymb}
+\usepackage{caption}
+\usepackage{bm}
+\usepackage{mathbbol}
+\usepackage{subcaption}
+\usepackage[fleqn]{amsmath}
+\graphicspath{ {images/} }
+\usepackage{setspace} 
+\usepackage{tikz,pgfplots,pgfplotstable,filecontents}
+\usetikzlibrary{arrows,decorations.pathmorphing,fit,positioning}
+\setlength{\parindent}{0.6em}
+\setlength{\parskip}{0.6em}
+\date{\vspace{-5ex}}
+\begin{document}
+\begin{spacing}{1.6}
+\title{Parameter Dimensionality}
+\maketitle
+
+\section{Data Simulation}
+\noindent We simulated a sparse dataset using LDA generative process. Parameter settings are as follows: the corpus is a collection of 5 documents and the vocabulary has 10 unique words. The number of words per document follows Poisson distribution with parameter 30. Each document is a mixture of 3 topics and the Dirichlet prior $\alpha$ for topics proportions is 0.001. Each topic is a mixture over the vocabulary and the Dirichlet prior $\eta$ for the topic-specific word distribution is 0.01. we fitted the LDA model over 500 iterations with two random seeds and plot their complete log-likelihoods (Figure 1).\\
+
+\begin{figure}[h]
+\begin{minipage}{0.5\textwidth} 
+    \begin{tikzpicture}
+  \pgfplotstableread[col sep=comma]{two_seeds_data.txt}\xy
+  \begin{axis}[enlarge x limits=false,enlarge y limits=0.02,width=\textwidth,height=\textwidth/1.6,grid=both,xlabel=Iteration,ylabel=Log-likelihood,scaled x ticks=false,xmin=0,ymin=-450]
+    \addplot+[mark=none,ultra thick] table [x expr=(\coordindex+1)*1, y index=0] \xy;
+    \addplot+[mark=none,ultra thick] table [x expr=(\coordindex+1)*1, y index=1] \xy;
+  \end{axis}
+  \label{fig.1}
+\end{tikzpicture}
+\end{minipage}
+\caption[Caption in ToC]{Left: Plot of log-likelihoods of the LDA model over 500 iterations with two random seeds, $\alpha$ equals 0.001 and $\eta$ equals 0.01. }
+\end{figure}
+
+\end{spacing}
+\end{document}
