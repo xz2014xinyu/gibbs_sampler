@@ -202,56 +202,77 @@ df.to_csv('/Users/zhangxinyu/Desktop/gibbs_sampler/two_seeds_data.txt',header=No
 
 ## initial topics:
 for i in range(D):
-	print('seed1 document {}:{}'.format(i,topics1[0][i]))
+	print('(seed1) topics at 2nd iteration for document {}:{}'.format(i,topics1[2][i]))
+
 for i in range(D):
-	print('seed2 document {}:{}'.format(i,topics2[0][i]))
+	print('(seed2) topics at 2nd iteration for document {}:{}'.format(i,topics2[2][i]))
 
 # seed1
-D=doc_term.shape[0] #number of documents
-V=doc_term.shape[1] #vocabulary size
 Nd=np.sum(doc_term,axis=1) # number of words in each document d
-N=doc_term.sum() # total number of words
 corpus=[] 
 z0=[] #initial topics
 ii, jj = np.nonzero(doc_term)
 ss = np.array(tuple(doc_term[i, j] for i, j in zip(ii, jj)))
 
 np.random.seed(1)
-
 for d in range(D):
 	index=[i for i,x in enumerate(ii) if x==d]
 	corpusd=np.repeat(jj[index],ss[index]) 
 	corpus.append(corpusd)
-	topics=np.random.randint(0,k,np.int(Nd[d])) 
-	z0.append(topics)
+	t=np.random.randint(0,k,np.int(Nd[d])) 
+	z0.append(t)
 
-z_update=[]
-z_update.append(z0)
-
-n_zw=np.zeros((k,V))
-
+n_zw1=np.zeros((k,V))
 for j in range(k):
 	for i in range(V):
 		cc=[]
 		for d in range(D):
-			index=[a for a,x in enumerate(z_update[0][d]) if x==j]
+			index=[a for a,x in enumerate(topics1[2][d]) if x==j]
 			cnt=len([b for b in corpus[d][index] if b==i])
 			cc.append(cnt)
-		n_zw[j,i]=sum(cc)
+		n_zw1[j,i]=sum(cc)
 
-n_dz=np.zeros((D,k))
+n_dz1=np.zeros((D,k))
 for i in range(D):
 	for j in range(k):
-		cc=len([a for a,x in enumerate(z_update[0][i]) if x==j])
-		n_dz[i,j]=cc
+		cc=len([a for a,x in enumerate(topics1[2][i]) if x==j])
+		n_dz1[i,j]=cc
 
-n_z=np.zeros(k)
+n_z1=np.zeros(k)
 for j in range(k):
 	cc=[]
 	for d in range(D):
-		c=len([a for a,x in enumerate(z_update[0][d]) if x==j])
+		c=len([a for a,x in enumerate(topics1[2][d]) if x==j])
 		cc.append(c)
-	n_z[j]=sum(cc)
+	n_z1[j]=sum(cc)
+
+n_zw2=np.zeros((k,V))
+for j in range(k):
+	for i in range(V):
+		cc=[]
+		for d in range(D):
+			index=[a for a,x in enumerate(topics1[2][d]) if x==j]
+			cnt=len([b for b in corpus[d][index] if b==i])
+			cc.append(cnt)
+		n_zw2[j,i]=sum(cc)
+
+n_dz2=np.zeros((D,k))
+for i in range(D):
+	for j in range(k):
+		cc=len([a for a,x in enumerate(topics1[2][i]) if x==j])
+		n_dz2[i,j]=cc
+
+n_z2=np.zeros(k)
+for j in range(k):
+	cc=[]
+	for d in range(D):
+		c=len([a for a,x in enumerate(topics1[2][d]) if x==j])
+		cc.append(c)
+	n_z2[j]=sum(cc)
+
+print '(seed1) topic-word; document-topic; topics at 2nd iteration:';  n_zw1; n_dz1; n_z1
+print '(seed2) topic-word; document-topic; topics at 2nd iteration:';  n_zw2; n_dz2; n_z2
+
 
 
 
