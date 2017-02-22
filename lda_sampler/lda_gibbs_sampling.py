@@ -21,9 +21,9 @@ def lda_sampling(num_topics,alpha,eta,num_iterations,doc_term):
 	ss = np.array(tuple(doc_term[i, j] for i, j in zip(ii, jj)))
 	for d in range(D):
 		index=[i for i,x in enumerate(ii) if x==d]
-		corpusd=np.repeat(jj[index],ss[index]) 
+		corpusd=np.repeat(jj[index],ss[index])
 		corpus.append(corpusd)
-		t=np.repeat(0,Nd[d,0])
+		t=np.random.randint(0,num_topics,np.int(Nd[d])) 
 		z0.append(t)
 	z_update=[]
 	z_update.append(z0)
