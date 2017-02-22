@@ -14,7 +14,7 @@ def lda_sampling(num_topics,alpha,eta,num_iterations,doc_term):
 	V=doc_term.shape[1] #vocabulary size
 	Nd=np.sum(doc_term,axis=1) # number of words in each document d
 #convert sparse matrix to arrays of words 	
-	corpus=[] 
+	corpus=[]
 	z0=[]
 	ii, jj = np.nonzero(doc_term)
 	ss = np.array(tuple(doc_term[i, j] for i, j in zip(ii, jj)))
@@ -22,7 +22,7 @@ def lda_sampling(num_topics,alpha,eta,num_iterations,doc_term):
 		index=[i for i,x in enumerate(ii) if x==d]
 		corpusd=np.repeat(jj[index],ss[index]) 
 		corpus.append(corpusd)
-		t=np.repeat(0,Nd[d])
+		t=np.repeat(0,Nd[d,0])
 		z0.append(t)
 	z_update=[]
 	z_update.append(z0)
