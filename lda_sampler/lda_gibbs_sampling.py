@@ -1,28 +1,19 @@
 #! /usr/bin/env python
-# alpha is a known k dimensional vector
-# beta is fixed for all topics. v dimensional vector.
-
-#random_seed : the generator used for initial topics z1.....zN, N is total number of words
-
-# doc_term is a sparse matrix. 
+# alpha is a k dimensional vector
+# eta is fixed for all topics. v dimensional vector.
+# corpus is a list of arrays, each array represent a document.
 
 #### #######################################  Gibbs sampler
 import numpy as np
 from log_likelihood import loglikelihood_
 
-def lda_sampling(num_topics,alpha,eta,num_iterations,doc_term):
-	D=doc_term.shape[0] #number of documents
-	V=doc_term.shape[1] #vocabulary size
-	Nd=np.sum(doc_term,axis=1) # number of words in each document d
-#convert sparse matrix to arrays of words 	
-	corpus=[]
+def lda_sampling(num_topics,alpha,eta,num_iterations,corpus,randomstate):
+	D=len(corpus) #number of documents
+	V=len(eta)#vocabulary size
+	Nd=[len([x for x in corpus][i]) for i in range(D)] # number of words in each document d
 	z0=[]
-	ii, jj = np.nonzero(doc_term)
-	ss = np.array(tuple(doc_term[i, j] for i, j in zip(ii, jj)))
 	for d in range(D):
-		index=[i for i,x in enumerate(ii) if x==d]
-		corpusd=np.repeat(jj[index],ss[index])
-		corpus.append(corpusd)
+		np.random.seed(d)
 		t=np.random.randint(0,num_topics,np.int(Nd[d])) 
 		z0.append(t)
 	z_update=[]
@@ -55,6 +46,7 @@ def lda_sampling(num_topics,alpha,eta,num_iterations,doc_term):
 	log_likelihood=[]
 	probz=np.zeros(num_topics)
 	for n in range(1,num_iterations+1):
+		np.random.seed(randomstate)
 		sampled_topics1={}
 		sampled_topics=[]
 		for d in range(D):
@@ -93,6 +85,7 @@ def lda_sampling(num_topics,alpha,eta,num_iterations,doc_term):
 	lda_sampling.theta_hat=theta_hat
 	lda_sampling.psi_hat=psi_hat
 	lda_sampling.log_likelihood=log_likelihood
+	lda_sampling.initial_topic=z0
 
 #return('Topic assignments at iteration {}:{}'.format(n,sampled_topics))
 
