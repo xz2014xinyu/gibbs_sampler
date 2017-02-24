@@ -45,8 +45,8 @@ def lda_sampling(num_topics,alpha,eta,num_iterations,corpus,randomstate):
 ## Sampling from full conditional posterior P(z| Z\z, w)
 	log_likelihood=[]
 	probz=np.zeros(num_topics)
-	for n in range(1,num_iterations+1):
-		np.random.seed(randomstate)
+	np.random.seed(randomstate)
+	for n in range(1,num_iterations):
 		sampled_topics1={}
 		sampled_topics=[]
 		for d in range(D):
