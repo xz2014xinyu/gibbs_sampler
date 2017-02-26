@@ -42,6 +42,7 @@ def lda_sampling(D,V,num_topics,alpha,eta,num_iterations,corpus,randomstate):
 			n_z[j]=sum(cc)
 ## Sampling from full conditional posterior P(z| Z\z, w)
 	log_likelihood=[]
+	probability=[]
 	probz=np.zeros(num_topics)
 	np.random.seed(randomstate)
 	for n in range(1,num_iterations):
@@ -68,7 +69,8 @@ def lda_sampling(D,V,num_topics,alpha,eta,num_iterations,corpus,randomstate):
 		z_update.append(sampled_topics)
 		L=loglikelihood_(n_zw,n_dz,alpha,eta,D,num_topics)
 		log_likelihood.append(L)
-		print('The Log-likelihood at iteration {}. is {}. random seed{}'.format(n,L,randomstate))
+		probability.append(probz)
+		print('The Log-likelihood at iteration {}. is {}. Random seed{}'.format(n,L,randomstate))
 ###paramter estimation
 	#theta_hat=np.zeros((D,num_topics))
 	#psi_hat=np.zeros((num_topics,V))
@@ -84,6 +86,7 @@ def lda_sampling(D,V,num_topics,alpha,eta,num_iterations,corpus,randomstate):
 	#lda_sampling.psi_hat=psi_hat
 	lda_sampling.log_likelihood=log_likelihood
 	lda_sampling.initial_topic=z0
+	lda_sampling.probs=probability
 
 #return('Topic assignments at iteration {}:{}'.format(n,sampled_topics))
 

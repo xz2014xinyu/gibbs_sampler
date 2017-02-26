@@ -18,7 +18,7 @@ from lda_sampler import*
 
 
 doc_term=np.load('/Users/zhangxinyu/Desktop/gibbs_sampler/dataset2/doc_term.npy')[()]
-corpus=sparse_to_arrays(doc_term)
+#corpus=sparse_to_arrays(doc_term)
 
 num_topics=3
 D=10
@@ -26,15 +26,50 @@ V=20
 alpha=[0.001]*num_topics #true prio 0.1....
 xi=100
 eta = [0.01]*V # Dirichlet prior for topic-word distribution
-n=2000
+n=10000
 
 
 L=[]
-sr=range(0,10000,200) # 50 different seeds
-for s in sr:
-	lda_sampling(D,V,num_topics,alpha,eta,n,corpus,s)
-	cl=lda_sampling.log_likelihood
-	L.append(cl)
+sr=range(0,20000,200) # 100 different seeds
+#for s in sr:
+#	lda_sampling(D,V,num_topics,alpha,eta,n,corpus,s)
+#	cl=lda_sampling.log_likelihood
+#	L.append(cl)
 
-df=pd.DataFrame(L)
-df.to_csv('/Users/zhangxinyu/Desktop/gibbs_sampler/dataset2/loglikelihoods_over50seeds.txt',header=None)
+#df=pd.DataFrame(L)
+#df.to_csv('/Users/zhangxinyu/Desktop/gibbs_sampler/dataset2/loglikelihoods_over100seeds.txt',header=None)
+
+df=pd.DataFrame.from_csv('/Users/zhangxinyu/Desktop/gibbs_sampler/dataset2/loglikelihoods_over100seeds.txt',header=None)
+for i in range(len(sr)):
+	a=df.loc[i]
+	L.append(a)
+
+
+
+
+a=np.arange(0,n,10).tolist()
+for i in range(len(sr)):
+	plt.plot(a,[y for y in L][i],linewidth=1.0)
+
+plt.xlabel("Iteration");plt.ylabel("Log Likelihoods over 100 different seeds")
+plt.show()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
