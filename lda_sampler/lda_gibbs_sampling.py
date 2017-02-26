@@ -7,9 +7,7 @@
 import numpy as np
 from log_likelihood import loglikelihood_
 
-def lda_sampling(num_topics,alpha,eta,num_iterations,corpus,randomstate):
-	D=len(corpus) #number of documents
-	V=len(eta)#vocabulary size
+def lda_sampling(D,V,num_topics,alpha,eta,num_iterations,corpus,randomstate):
 	Nd=[len([x for x in corpus][i]) for i in range(D)] # number of words in each document d
 	z0=[]
 	for d in range(D):
@@ -70,20 +68,20 @@ def lda_sampling(num_topics,alpha,eta,num_iterations,corpus,randomstate):
 		z_update.append(sampled_topics)
 		L=loglikelihood_(n_zw,n_dz,alpha,eta,D,num_topics)
 		log_likelihood.append(L)
-		print('The Log-likelihood at iteration {}.{}'.format(n,L))
+		print('The Log-likelihood at iteration {}. is {}. random seed{}'.format(n,L,randomstate))
 ###paramter estimation
-	theta_hat=np.zeros((D,num_topics))
-	psi_hat=np.zeros((num_topics,V))
-	for i in range(D):
-		for j in range(num_topics):
-			theta_hat[i,j]=(n_dz[i,j]+alpha[j])/(Nd[i]-1+sum(alpha))
-	for i in range(num_topics):
-		for j in range(V):
-			psi_hat[i,j]=(n_zw[i,j]+eta[j])/(n_z[i]+sum(eta))
+	#theta_hat=np.zeros((D,num_topics))
+	#psi_hat=np.zeros((num_topics,V))
+	#for i in range(D):
+	#	for j in range(num_topics):
+	#		theta_hat[i,j]=(n_dz[i,j]+alpha[j])/(Nd[i]-1+sum(alpha))
+	#for i in range(num_topics):
+	#	for j in range(V):
+	#		psi_hat[i,j]=(n_zw[i,j]+eta[j])/(n_z[i]+sum(eta))
 ############## results
 	lda_sampling.topics=z_update
-	lda_sampling.theta_hat=theta_hat
-	lda_sampling.psi_hat=psi_hat
+	#lda_sampling.theta_hat=theta_hat
+	#lda_sampling.psi_hat=psi_hat
 	lda_sampling.log_likelihood=log_likelihood
 	lda_sampling.initial_topic=z0
 

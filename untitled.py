@@ -32,6 +32,12 @@ plt.show()
 plt.plot(pn[0:10],cl1[0:10],pn[0:10],cl2[0:10])
 plt.show()
 
+
+
+
+
+
+
 df=pd.DataFrame(cl1,cl2)
 df.to_csv('/Users/zhangxinyu/Desktop/gibbs_sampler/two_seeds_data.txt',header=None)
 
