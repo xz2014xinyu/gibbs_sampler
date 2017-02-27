@@ -23,7 +23,7 @@ corpus=sparse_to_arrays(doc_term)
 num_topics=3
 D=10
 V=20 
-alpha=[0.001]*num_topics #true prio 0.1....
+alpha=[0.001]*num_topics #true prior 0.1....
 xi=100
 eta = [0.01]*V # Dirichlet prior for topic-word distribution
 n=10000
@@ -58,6 +58,12 @@ for i in range(len(sr)):
 plt.xlabel("Iteration");plt.ylabel("Log Likelihoods over 100 different seeds")
 plt.show()
 
+a=np.arange(1,1000,1).tolist()
+for i in range(len(sr)):
+	plt.plot(a[800:1000],[y for y in L][i][800:1000],linewidth=1.0)
+
+plt.xlabel("Iteration");plt.ylabel("Log Likelihoods over 100 different seeds")
+plt.show()
 
 
 p=[]
@@ -98,7 +104,7 @@ for i in range(len(L)):
 
 L=logL
 
-
+##plot
 a=np.arange(1,2000,1).tolist()
 for i in range(len(seedset2)):
 	plt.plot(a,[y for y in L][i],linewidth=1.0)
@@ -132,6 +138,50 @@ seedset1=[seedset2[i] for i in index1]
 seedset2=[seedset2[j] for j in index2]
 
 
+
+
+a=np.arange(1,2000,1).tolist()
+Lset1=[L[i] for i in index1]
+
+for i in range(len(index1)):
+	plt.plot(a,[y for y in Lset1][i])
+
+plt.xlabel("Iteration");plt.ylabel("Log Likelihoods set1")
+plt.show()
+
+
+### 1st     NOOOOOO
+L1=[x for x in Lset1 if x[360]<=(-650)][0]
+seed1=seedset1[Lset1.index(L1)]
+
+plt.plot(a,L1,color='red')
+plt.xlabel("Iteration");plt.ylabel("Log Likelihoods set2 (seed2600)")
+plt.show()
+
+
+
+lda_sampling(D,V,num_topics,alpha,eta,1600,corpus,seed1)
+l1=lda_sampling.log_likelihood
+p1=lda_sampling.probs
+plt.plot(l1)
+
+
+
+## 2nd
+L2=[x for x in Lset1 if x[320]<=(-570) and (-630)<=x[320]][0]
+seed2=seedset1[Lset1.index(L2)]
+
+plt.plot(a,L2,color='green')
+plt.xlabel("Iteration");plt.ylabel("Log Likelihoods set2 (seed200)")
+plt.show()
+
+lda_sampling(D,V,num_topics,alpha,eta,1340,corpus,seed2)
+l2=lda_sampling.log_likelihood
+p2=lda_sampling.probs
+plt.plot(l1)
+
+#### set2
+
 L=[]
 ### for seedset2: [400, 2800, 3800, 5800, 12200, 12800]
 #for s in seedset2:
@@ -143,11 +193,87 @@ L=[]
 #df.to_csv('/Users/zhangxinyu/Desktop/gibbs_sampler/dataset2/seedset2_2000iter.txt',header=None)
 
 
+L=[]
+df=pd.DataFrame.from_csv('/Users/zhangxinyu/Desktop/gibbs_sampler/dataset2/seedset2_3000iter.txt',header=None)
+for i in range(len(seedset2)):
+	a=df.loc[i]
+	L.append(a)
 
 
+logL=[]
+for i in range(len(L)):
+	w=np.array(L[i]).tolist()
+	logL.append(w)
+
+L=logL
+
+##plot
+a=np.arange(1,3000,1).tolist()
+for i in range(len(seedset2)):
+	plt.plot(a,[y for y in L][i],linewidth=1.0)
+
+plt.xlabel("Iteration");plt.ylabel("Log Likelihoods seedset2")
+plt.show()
 
 
+for i in range(len(seedset2)):
+	plt.plot(a[2500:3000],[y for y in L][i][2500:3000],linewidth=1.0)
 
+plt.xlabel("Iteration");plt.ylabel("Log Likelihoods seedset2")
+plt.show()
+
+p=[]
+for i in range(len(seedset2)):
+	o=L[i][2998]
+	p.append(o)
+
+plt.hist(p)
+plt.title("histogram of final loglikelihoods seedset2")
+plt.show()
+
+## 2 sets
+index1=[e for e,x in enumerate(p) if (-540)<x]
+index2=[e for e,x in enumerate(p) if x<=(-540)]
+seedset1=[seedset2[i] for i in index1]
+seedset2=[seedset2[j] for j in index2]
+
+L=[]
+### for seedset2: [2800, 3800, 5800, 12200, 12800]
+#for s in seedset2:
+#	lda_sampling(D,V,num_topics,alpha,eta,5000,corpus,s)
+#	cl=lda_sampling.log_likelihood
+#	L.append(cl)
+	
+#df=pd.DataFrame(L)
+#df.to_csv('/Users/zhangxinyu/Desktop/gibbs_sampler/dataset2/seedset2_5000iter.txt',header=None)
+
+L=[]
+df=pd.DataFrame.from_csv('/Users/zhangxinyu/Desktop/gibbs_sampler/dataset2/seedset2_5000iter.txt',header=None)
+for i in range(len(seedset2)):
+	a=df.loc[i]
+	L.append(a)
+
+
+logL=[]
+for i in range(len(L)):
+	w=np.array(L[i]).tolist()
+	logL.append(w)
+
+L=logL
+
+a=np.arange(1,5000,1).tolist()
+for i in range(len(seedset2)):
+	plt.plot(a,[y for y in L][i],linewidth=1.0)
+
+plt.xlabel("Iteration");plt.ylabel("Log Likelihoods seedset2")
+plt.show()
+
+
+for i in range(len(seedset2)):
+	plt.plot(a[4500:5000],[y for y in L][i][4500:5000],linewidth=1.0)
+
+plt.xlabel("Iteration");plt.ylabel("Log Likelihoods seedset2")
+plt.show()
 
 
 
