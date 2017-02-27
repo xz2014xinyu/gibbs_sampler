@@ -42,7 +42,6 @@ for i in range(len(sr)):
 	a=df.loc[i]
 	L.append(a)
 
-
 logL=[]
 for i in range(len(L)):
 	w=np.array(L[i]).tolist()
@@ -50,7 +49,7 @@ for i in range(len(L)):
 
 L=logL
 
-
+##plot
 
 a=np.arange(1,1000,1).tolist()
 for i in range(len(sr)):
@@ -77,13 +76,78 @@ index2=[e for e,x in enumerate(p) if x<=(-520)]
 seedset1=[sr[i] for i in index1]
 seedset2=[sr[j] for j in index2]
 
-### for seedset2:
-L=[]
-for s in seedset2:
-	lda_sampling(D,V,num_topics,alpha,eta,2000,corpus,s)
-	cl=lda_sampling.log_likelihood
-	L.append(cl)
+### for seedset2: [0, 200, 400, 2600, 2800, 3800, 4600, 5800, 7800, 12200, 12800, 13000, 15800]
+#for s in seedset2:
+#	lda_sampling(D,V,num_topics,alpha,eta,2000,corpus,s)
+#	cl=lda_sampling.log_likelihood
+#	L.append(cl)
 	
+#df=pd.DataFrame(L)
+#df.to_csv('/Users/zhangxinyu/Desktop/gibbs_sampler/dataset2/seedset2_2000iter.txt',header=None)
+L=[]
+df=pd.DataFrame.from_csv('/Users/zhangxinyu/Desktop/gibbs_sampler/dataset2/seedset2_2000iter.txt',header=None)
+for i in range(len(seedset2)):
+	a=df.loc[i]
+	L.append(a)
+
+
+logL=[]
+for i in range(len(L)):
+	w=np.array(L[i]).tolist()
+	logL.append(w)
+
+L=logL
+
+
+a=np.arange(1,2000,1).tolist()
+for i in range(len(seedset2)):
+	plt.plot(a,[y for y in L][i],linewidth=1.0)
+
+plt.xlabel("Iteration");plt.ylabel("Log Likelihoods seedset2")
+plt.show()
+
+a=np.arange(1,2000,1).tolist()
+for i in range(len(seedset2)):
+	plt.plot(a[1500:2000],[y for y in L][i][1500:2000],linewidth=1.0)
+
+plt.xlabel("Iteration");plt.ylabel("Log Likelihoods seedset2")
+plt.show()
+
+
+p=[]
+for i in range(len(seedset2)):
+	o=L[i][1998]
+	p.append(o)
+
+plt.hist(p)
+plt.title("histogram of final loglikelihoods seedset2")
+plt.show()
+
+
+### 2 sets again
+
+index1=[e for e,x in enumerate(p) if (-560)<x]
+index2=[e for e,x in enumerate(p) if x<=(-560)]
+seedset1=[seedset2[i] for i in index1]
+seedset2=[seedset2[j] for j in index2]
+
+
+L=[]
+### for seedset2: [400, 2800, 3800, 5800, 12200, 12800]
+#for s in seedset2:
+#	lda_sampling(D,V,num_topics,alpha,eta,3000,corpus,s)
+#	cl=lda_sampling.log_likelihood
+#	L.append(cl)
+	
+#df=pd.DataFrame(L)
+#df.to_csv('/Users/zhangxinyu/Desktop/gibbs_sampler/dataset2/seedset2_2000iter.txt',header=None)
+
+
+
+
+
+
+
 
 
 
