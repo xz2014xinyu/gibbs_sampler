@@ -53,7 +53,7 @@ L=logL
 
 a=np.arange(1,1000,1).tolist()
 for i in range(len(sr)):
-	plt.plot(a,[y for y in L][i],linewidth=1.0)
+	plt.plot(a[5:1000],[y for y in L][i][5:1000],linewidth=1.0)
 
 plt.xlabel("Iteration");plt.ylabel("Log Likelihoods over 100 different seeds")
 plt.show()
@@ -107,7 +107,7 @@ L=logL
 ## figure 3 and 4
 a=np.arange(1,2000,1).tolist()
 for i in range(len(seedset2)):
-	plt.plot(a,[y for y in L][i],linewidth=1.0)
+	plt.plot(a[10:2000],[y for y in L][i][10:2000],linewidth=1.0)
 
 plt.xlabel("Iteration");plt.ylabel("Log Likelihoods seedset2")
 plt.show()
@@ -165,6 +165,7 @@ for i in range(len(L)):
 
 L=logL
 
+################################# probs
 prob=[]
 df=pd.DataFrame.from_csv('/Users/zhangxinyu/Desktop/gibbs_sampler/dataset2/seedset2.1_probs.txt',header=None)
 for i in range(len(seedset21)):
@@ -172,21 +173,65 @@ for i in range(len(seedset21)):
 	prob.append(a)
 
 
-p=[]
-for i in range(len(prob)):
-	w=np.array(prob[i]).tolist()
-	p.append(w)
+P0=[]
+P200=[]
+P2600=[]
+P7800=[]
+P13000=[]
+P15800=[]
+for j in range(1,2999):
+	a=prob[0][j].replace(']','').replace('[','').split()
+	p=[float(x) for x in a]
+	P0.append(p)
+P0=np.array(P0)
 
-prob=p
+for j in range(1,2999):
+	a=prob[1][j].replace(']','').replace('[','').split()
+	p=[float(x) for x in a]
+	P200.append(p)
+P200=np.array(P200)
+
+for j in range(1,2999):
+	a=prob[2][j].replace(']','').replace('[','').split()
+	p=[float(x) for x in a]
+	P2600.append(p)
+P2600=np.array(P2600)
+
+for j in range(1,2999):
+	a=prob[3][j].replace(']','').replace('[','').split()
+	p=[float(x) for x in a]
+	P7800.append(p)
+P7800=np.array(P7800)
+
+for j in range(1,2999):
+	a=prob[4][j].replace(']','').replace('[','').split()
+	p=[float(x) for x in a]
+	P13000.append(p)
+P13000=np.array(P13000)
+
+for j in range(1,2999):
+	a=prob[5][j].replace(']','').replace('[','').split()
+	p=[float(x) for x in a]
+	P15800.append(p)
+P15800=np.array(P15800)
+
+#########################################
+
 
 #figure5 and 6
 a=np.arange(1,3000,1).tolist()
 for i in range(len(index1)):
-	plt.plot(a,[y for y in l][i])
+	plt.plot(a[100:3000],[y for y in L][i][100:3000])
 
 plt.xlabel("Iteration");plt.ylabel("Log Likelihoods seedset2.1")
 plt.show()
 
+
+for i in range(len(index1)):
+	plt.plot(a[2500:3000],[y for y in L][i][2500:3000])
+
+plt.xlabel("Iteration");plt.ylabel("Log Likelihoods seedset2.1")
+plt.show()
 
 
 
