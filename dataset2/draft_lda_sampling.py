@@ -215,6 +215,11 @@ for j in range(1,2999):
 	P15800.append(p)
 P15800=np.array(P15800)
 
+
+l0_2600
+l13000_7800
+
+
 #########################################
 
 
@@ -232,6 +237,8 @@ for i in range(len(index1)):
 
 plt.xlabel("Iteration");plt.ylabel("Log Likelihoods seedset2.1")
 plt.show()
+
+
 
 
 
