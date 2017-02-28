@@ -49,7 +49,7 @@ for i in range(len(L)):
 
 L=logL
 
-##plot
+##figure 1 and 2
 
 a=np.arange(1,1000,1).tolist()
 for i in range(len(sr)):
@@ -104,7 +104,7 @@ for i in range(len(L)):
 
 L=logL
 
-##plot
+## figure 3 and 4
 a=np.arange(1,2000,1).tolist()
 for i in range(len(seedset2)):
 	plt.plot(a,[y for y in L][i],linewidth=1.0)
@@ -132,70 +132,28 @@ plt.show()
 
 ### 2 sets again
 
-index1=[e for e,x in enumerate(p) if (-560)<x]
-index2=[e for e,x in enumerate(p) if x<=(-560)]
-seedset1=[seedset2[i] for i in index1]
-seedset2=[seedset2[j] for j in index2]
+index1=[e for e,x in enumerate(p) if (-520)<x]
+index2=[e for e,x in enumerate(p) if x<=(-520)]
+seedset21=[seedset2[i] for i in index1]
+seedset22=[seedset2[j] for j in index2]
 
 
 
-
-a=np.arange(1,2000,1).tolist()
-Lset1=[L[i] for i in index1]
-
-for i in range(len(index1)):
-	plt.plot(a,[y for y in Lset1][i])
-
-plt.xlabel("Iteration");plt.ylabel("Log Likelihoods set1")
-plt.show()
-
-
-### 1st     NOOOOOO
-L1=[x for x in Lset1 if x[360]<=(-650)][0]
-seed1=seedset1[Lset1.index(L1)]
-
-plt.plot(a,L1,color='red')
-plt.xlabel("Iteration");plt.ylabel("Log Likelihoods set2 (seed2600)")
-plt.show()
-
-
-
-lda_sampling(D,V,num_topics,alpha,eta,1600,corpus,seed1)
-l1=lda_sampling.log_likelihood
-p1=lda_sampling.probs
-plt.plot(l1)
-
-
-
-## 2nd
-L2=[x for x in Lset1 if x[320]<=(-570) and (-630)<=x[320]][0]
-seed2=seedset1[Lset1.index(L2)]
-
-plt.plot(a,L2,color='green')
-plt.xlabel("Iteration");plt.ylabel("Log Likelihoods set2 (seed200)")
-plt.show()
-
-lda_sampling(D,V,num_topics,alpha,eta,1340,corpus,seed2)
-l2=lda_sampling.log_likelihood
-p2=lda_sampling.probs
-plt.plot(l1)
-
-#### set2
-
-L=[]
-### for seedset2: [400, 2800, 3800, 5800, 12200, 12800]
-#for s in seedset2:
+### seedset2.1 [0, 200, 2600, 7800, 13000, 15800]
+#l=[]
+prob=[]
+#for s in seedset21:
 #	lda_sampling(D,V,num_topics,alpha,eta,3000,corpus,s)
-#	cl=lda_sampling.log_likelihood
-#	L.append(cl)
-	
-#df=pd.DataFrame(L)
-#df.to_csv('/Users/zhangxinyu/Desktop/gibbs_sampler/dataset2/seedset2_2000iter.txt',header=None)
+#	l.append(lda_sampling.log_likelihood)
+#	prob.append(lda_sampling.probs)
 
-
+#df=pd.DataFrame(l)
+#df.to_csv('/Users/zhangxinyu/Desktop/gibbs_sampler/dataset2/seedset2.1_3000iter.txt',header=None)
+#df=pd.DataFrame(prob)
+#df.to_csv('/Users/zhangxinyu/Desktop/gibbs_sampler/dataset2/seedset2.1_probs.txt',header=None)
 L=[]
-df=pd.DataFrame.from_csv('/Users/zhangxinyu/Desktop/gibbs_sampler/dataset2/seedset2_3000iter.txt',header=None)
-for i in range(len(seedset2)):
+df=pd.DataFrame.from_csv('/Users/zhangxinyu/Desktop/gibbs_sampler/dataset2/seedset2.1_3000iter.txt',header=None)
+for i in range(len(seedset21)):
 	a=df.loc[i]
 	L.append(a)
 
@@ -207,29 +165,110 @@ for i in range(len(L)):
 
 L=logL
 
-##plot
-a=np.arange(1,3000,1).tolist()
-for i in range(len(seedset2)):
-	plt.plot(a,[y for y in L][i],linewidth=1.0)
+prob=[]
+df=pd.DataFrame.from_csv('/Users/zhangxinyu/Desktop/gibbs_sampler/dataset2/seedset2.1_probs.txt',header=None)
+for i in range(len(seedset21)):
+	a=df.loc[i]
+	prob.append(a)
 
-plt.xlabel("Iteration");plt.ylabel("Log Likelihoods seedset2")
+
+p=[]
+for i in range(len(prob)):
+	w=np.array(prob[i]).tolist()
+	p.append(w)
+
+prob=p
+
+#figure5 and 6
+a=np.arange(1,3000,1).tolist()
+for i in range(len(index1)):
+	plt.plot(a,[y for y in l][i])
+
+plt.xlabel("Iteration");plt.ylabel("Log Likelihoods seedset2.1")
 plt.show()
 
 
-for i in range(len(seedset2)):
-	plt.plot(a[2500:3000],[y for y in L][i][2500:3000],linewidth=1.0)
 
-plt.xlabel("Iteration");plt.ylabel("Log Likelihoods seedset2")
+
+
+#### seedset2.2
+
+L=[]
+### for seedset2.2: [400, 2800, 3800, 4600, 5800, 12200, 12800]
+#for s in seedset22:
+#	lda_sampling(D,V,num_topics,alpha,eta,5000,corpus,s)
+#	cl=lda_sampling.log_likelihood
+#	L.append(cl)
+	
+#df=pd.DataFrame(L)
+#df.to_csv('/Users/zhangxinyu/Desktop/gibbs_sampler/dataset2/seedset2.2_5000iter.txt',header=None)
+
+
+L=[]
+df=pd.DataFrame.from_csv('/Users/zhangxinyu/Desktop/gibbs_sampler/dataset2/seedset2.2_5000iter.txt',header=None)
+for i in range(len(seedset22)):
+	a=df.loc[i]
+	L.append(a)
+
+
+logL=[]
+for i in range(len(L)):
+	w=np.array(L[i]).tolist()
+	logL.append(w)
+
+L=logL
+
+## figure 7 and 8
+a=np.arange(1,5000,1).tolist()
+for i in range(len(seedset22)):
+	plt.plot(a,[y for y in L][i],linewidth=1.0)
+
+plt.xlabel("Iteration");plt.ylabel("Log Likelihoods seedset2.2")
+plt.show()
+
+
+for i in range(len(seedset22)):
+	plt.plot(a[4500:5000],[y for y in L][i][4500:5000],linewidth=1.0)
+
+plt.xlabel("Iteration");plt.ylabel("Log Likelihoods seedset2.2")
 plt.show()
 
 p=[]
-for i in range(len(seedset2)):
-	o=L[i][2998]
+for i in range(len(seedset22)):
+	o=L[i][4998]
 	p.append(o)
 
 plt.hist(p)
-plt.title("histogram of final loglikelihoods seedset2")
+plt.title("histogram of final loglikelihoods seedset2.2")
 plt.show()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ## 2 sets
 index1=[e for e,x in enumerate(p) if (-540)<x]
