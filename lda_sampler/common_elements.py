@@ -1,4 +1,4 @@
-def common_elements(list1,list2):
+def common_elements_prob(list1,list2):
 	list=[]
 	for x in list1:
 		for y in list2:
@@ -19,7 +19,7 @@ def common_elements(list1,list2):
 	else:
 		return(np.vstack({tuple(row) for row in list}))
 
-def common_elements(list1,list2):
+def common_elements_topics(list1,list2):
 	list=[]
 	for x in list1:
 		if x in list2:
