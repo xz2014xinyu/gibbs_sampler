@@ -220,6 +220,38 @@ l0_2600
 l13000_7800
 
 
+################################# Topics is a list of 6 lists, each corresponds to a random seed in seedset21.
+topics=[]
+df=pd.DataFrame.from_csv('/Users/zhangxinyu/Desktop/gibbs_sampler/dataset2/seedset2.1_topics.txt',header=None)
+for i in range(len(seedset21)):
+	a=df.loc[i]
+	topics.append(a)
+
+Topics=[]
+for j in range(0,len(seedset21)):
+	O=[]
+	for i in range(1,3000):
+		a=topics[j][i].replace(']','').replace('[','').replace('array(','').replace(')','').replace(',','').split('\n')
+		T=[]
+		for k in range(len(a)):
+			t=[int(float(x)) for x in a[k].split()]
+			T=T+t
+		O.append(T)
+	Topics.append(O)
+
+T0=Topics[0]
+T200=Topics[1]
+T2600=Topics[2]
+T7800=Topics[3]
+T13000=Topics[4]
+T15800=Topics[5]
+
+T0_200=common_elements(T0,T200)
+T2600_7800=common_elements(T2600,T7800)
+T13000_15800=common_elements(T13000,T15800)
+
+Common_topics_seedset21=common_elements(T2600_7800,T13000_15800)[0] ### this topics assignment is also shared by seed0 and 200
+
 #########################################
 
 
