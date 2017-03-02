@@ -165,7 +165,7 @@ for i in range(len(L)):
 
 L=logL
 
-################################# probs
+################################# probs no common elements
 prob=[]
 df=pd.DataFrame.from_csv('/Users/zhangxinyu/Desktop/gibbs_sampler/dataset2/seedset2.1_probs.txt',header=None)
 for i in range(len(seedset21)):
@@ -246,11 +246,11 @@ T7800=Topics[3]
 T13000=Topics[4]
 T15800=Topics[5]
 
-T0_200=common_elements(T0,T200)
-T2600_7800=common_elements(T2600,T7800)
-T13000_15800=common_elements(T13000,T15800)
+T0_200=common_elements_topics(T0,T200)
+T2600_7800=common_elements_topics(T2600,T7800)
+T13000_15800=common_elements_topics(T13000,T15800)
 
-Common_topics_seedset21=common_elements(T2600_7800,T13000_15800)[0] ### this topics assignment is also shared by seed0 and 200
+Common_topics_seedset21=common_elements_topics(T2600_7800,T13000_15800)[0] ### this topics assignment is also shared by seed0 and 200
 
 #########################################
 
@@ -305,7 +305,7 @@ L=logL
 ## figure 7 and 8
 a=np.arange(1,5000,1).tolist()
 for i in range(len(seedset22)):
-	plt.plot(a,[y for y in L][i],linewidth=1.0)
+	plt.plot(a[10:5000],[y for y in L][i][10:5000],linewidth=1.0)
 
 plt.xlabel("Iteration");plt.ylabel("Log Likelihoods seedset2.2")
 plt.show()
@@ -330,49 +330,36 @@ plt.show()
 
 
 
+#### seedset2.2.1 and seedset 2.2.2
+
+index1=[e for e,x in enumerate(p) if (-520)<x]
+index2=[e for e,x in enumerate(p) if x<=(-520)]
+seedset221=[seedset22[i] for i in index1]
+seedset222=[seedset22[j] for j in index2]
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-## 2 sets
-index1=[e for e,x in enumerate(p) if (-540)<x]
-index2=[e for e,x in enumerate(p) if x<=(-540)]
-seedset1=[seedset2[i] for i in index1]
-seedset2=[seedset2[j] for j in index2]
 
 L=[]
-### for seedset2: [2800, 3800, 5800, 12200, 12800]
-#for s in seedset2:
-#	lda_sampling(D,V,num_topics,alpha,eta,5000,corpus,s)
+topics=[]
+############################ for seedset221: [400, 4600, 5800]
+#for s in seedset221:
+#	lda_sampling(D,V,num_topics,alpha,eta,6000,corpus,s)
 #	cl=lda_sampling.log_likelihood
 #	L.append(cl)
+#	topics.append(lda_sampling.topics)
+
 	
+
 #df=pd.DataFrame(L)
-#df.to_csv('/Users/zhangxinyu/Desktop/gibbs_sampler/dataset2/seedset2_5000iter.txt',header=None)
+#df.to_csv('/Users/zhangxinyu/Desktop/gibbs_sampler/dataset2/seedset221_6000iter.txt',header=None)
+#df=pd.DataFrame(topics)
+#df.to_csv('/Users/zhangxinyu/Desktop/gibbs_sampler/dataset2/seedset221_topics.txt',header=None)
 
 L=[]
-df=pd.DataFrame.from_csv('/Users/zhangxinyu/Desktop/gibbs_sampler/dataset2/seedset2_5000iter.txt',header=None)
-for i in range(len(seedset2)):
+df=pd.DataFrame.from_csv('/Users/zhangxinyu/Desktop/gibbs_sampler/dataset2/seedset221_6000iter.txt',header=None)
+for i in range(len(seedset221)):
 	a=df.loc[i]
 	L.append(a)
 
@@ -384,23 +371,54 @@ for i in range(len(L)):
 
 L=logL
 
-a=np.arange(1,5000,1).tolist()
-for i in range(len(seedset2)):
-	plt.plot(a,[y for y in L][i],linewidth=1.0)
 
-plt.xlabel("Iteration");plt.ylabel("Log Likelihoods seedset2")
+################################# Topics is a list of 3 lists, each corresponds to a random seed in seedset221.
+topics=[]
+df=pd.DataFrame.from_csv('/Users/zhangxinyu/Desktop/gibbs_sampler/dataset2/seedset221_topics.txt',header=None)
+for i in range(len(seedset221)):
+	a=df.loc[i]
+	topics.append(a)
+
+Topics=[]
+for j in range(0,len(seedset221)):
+	O=[]
+	for i in range(1,6000):
+		a=topics[j][i].replace(']','').replace('[','').replace('array(','').replace(')','').replace(',','').split('\n')
+		T=[]
+		for k in range(len(a)):
+			t=[int(float(x)) for x in a[k].split()]
+			T=T+t
+		O.append(T)
+	Topics.append(O)
+
+T400=Topics[0]
+T4600=Topics[1]
+T5800=Topics[2]
+
+T400_4600=common_elements_topics(T400,T4600)
+
+Common_topics_seedset221=common_elements_topics(T400_4600,T5800)[0] 
+
+#########################################
+
+
+### figure 9 and 10
+a=np.arange(1,6000,1).tolist()
+for i in range(len(seedset221)):
+	plt.plot(a[10:6000],[y for y in L][i][10:6000],linewidth=1.0)
+
+plt.xlabel("Iteration");plt.ylabel("Log Likelihoods seedset221")
 plt.show()
 
 
-for i in range(len(seedset2)):
-	plt.plot(a[4500:5000],[y for y in L][i][4500:5000],linewidth=1.0)
+for i in range(len(seedset221)):
+	plt.plot(a[4500:6000],[y for y in L][i][4500:6000],linewidth=1.0)
 
-plt.xlabel("Iteration");plt.ylabel("Log Likelihoods seedset2")
+plt.xlabel("Iteration");plt.ylabel("Log Likelihoods seedset221")
 plt.show()
 
 
-
-
+########## seedset222
 
 
 

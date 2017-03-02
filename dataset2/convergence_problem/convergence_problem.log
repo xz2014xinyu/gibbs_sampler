@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2017.1.26)  1 MAR 2017 11:44
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2017.1.26)  2 MAR 2017 01:26
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -818,18 +818,35 @@ Underfull \hbox (badness 10000) in paragraph at lines 37--45
 [1
 
 {/usr/local/texlive/2016/texmf-var/fonts/map/pdftex/updmap/pdftex.map} <./figur
-e1.png> <./figure2.png>] <figure5.png, id=20, 409.7709pt x 272.4579pt>
-File: figure5.png Graphic file (type png)
+e1.png> <./figure2.png>]
+! Missing $ inserted.
+<inserted text> 
+                $
+l.47 ...topic assignment for all seeds.(see draft_
+                                                  lda_sampling.py for more i...
+I've inserted a begin-math/end-math symbol since I think
+you left one out. Proceed, with fingers crossed.
 
-<use figure5.png>
+<figure5.png, id=20, 409.7709pt x 272.4579pt>
+File: figure5.png Graphic file (type png)
+ <use figure5.png>
 Package pdftex.def Info: figure5.png used on input line 50.
 (pdftex.def)             Requested size: 227.62204pt x 151.34479pt.
- <figure6.png, id=21, 409.7709pt x 272.4579pt>
-File: figure6.png Graphic file (type png)
 
-<use figure6.png>
+<figure6.png, id=21, 409.7709pt x 272.4579pt>
+File: figure6.png Graphic file (type png)
+ <use figure6.png>
 Package pdftex.def Info: figure6.png used on input line 51.
 (pdftex.def)             Requested size: 227.62204pt x 151.34479pt.
+
+! Missing $ inserted.
+<inserted text> 
+                $
+l.55 
+     
+I've inserted a begin-math/end-math symbol since I think
+you left one out. Proceed, with fingers crossed.
+
 
 Underfull \hbox (badness 10000) in paragraph at lines 47--55
 
@@ -847,7 +864,7 @@ File: figure8.png Graphic file (type png)
 Package pdftex.def Info: figure8.png used on input line 61.
 (pdftex.def)             Requested size: 227.62204pt x 151.34479pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 58--65
+Underfull \hbox (badness 10000) in paragraph at lines 57--65
 
  []
 
@@ -856,20 +873,21 @@ e7.png> <./figure8.png>] (./convergence_problem.aux) )
 Here is how much of TeX's memory you used:
  24464 strings out of 493014
  621057 string characters out of 6133351
- 770283 words of memory out of 5000000
+ 770282 words of memory out of 5000000
  27546 multiletter control sequences out of 15000+600000
  15167 words of font info for 57 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 55i,8n,77p,779b,609s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 55i,9n,77p,779b,609s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/local/texlive/2016/
 texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/local/texlive/2016/t
 exmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/texlive/2016/te
-xmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2016/texm
-f-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb>
-Output written on convergence_problem.pdf (3 pages, 763016 bytes).
+xmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/local/texlive/2016/texm
+f-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2016/texmf-
+dist/fonts/type1/public/amsfonts/cm/cmr17.pfb>
+Output written on convergence_problem.pdf (3 pages, 773259 bytes).
 PDF statistics:
- 50 PDF objects out of 1000 (max. 8388607)
- 24 compressed objects within 1 object stream
+ 54 PDF objects out of 1000 (max. 8388607)
+ 27 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  53 words of extra memory for PDF output out of 10000 (max. 10000000)
 
